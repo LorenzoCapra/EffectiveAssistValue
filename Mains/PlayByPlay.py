@@ -1,3 +1,6 @@
+import pandas as pd
+import time
+
 from nba_api.stats.endpoints import playbyplayv2
 from Tools.Utils import players_eav_in_1_game, games_in_1_season
 
@@ -12,5 +15,33 @@ pbp = playbyplayv2.PlayByPlayV2(game_id)
 pbp = pbp.get_data_frames()[0]
 
 '''Compute EAV for each player of this game'''
-df_eav = players_eav_in_1_game(pbp)
-print(df_eav)
+# df_eav = players_eav_in_1_game(pbp)
+
+
+'''Search for all LAL games'''
+games_restrict = games.loc[:, ['TEAM_ABBREVIATION', 'GAME_ID']]
+
+lal_games_id = []
+
+for i in range(games_restrict.shape[0]):
+  team = 'LAL'
+  if games_restrict.iloc[i, 0] == team:
+    lal_games_id.append(games_restrict.iloc[i, 1])
+
+df_players_eav = pd.DataFrame()
+for i in range(len(lal_games_id)):
+  game_id = lal_games_id[i]
+
+  time.sleep(1)
+
+  pbp_ = playbyplayv2.PlayByPlayV2(game_id)
+  pbp_ = pbp_.get_data_frames()[0]
+
+  time.sleep(1)
+
+  eav_game = players_eav_in_1_game(pbp_, i)
+
+  df_players_eav = pd.concat([df_players_eav, eav_game], ignore_index=True)
+
+# Saving the dataframe
+df_players_eav.to_csv('LAL_EAV.csv', header=False, index=False)
