@@ -61,20 +61,25 @@ def games_in_1_season(season, season_type='Regular Season'):
     return games, game_ids
 
 
-def players_eav_in_1_game(pbp):
+def players_eav_in_1_game(pbp, i=None):
     """
     Function to extract the EAV values of each player for a specific game
 
-    Inputs: DataFrame of the Play-By-Play data for a specific game
+    Inputs:
+    - DataFrame of the Play-By-Play data for a specific game
+    - Index of the game to search for
 
-    Outputs: DataFrame containing each player and their respective EAV for the specific game
+    Outputs:
+    - DataFrame containing each player and their respective EAV for the specific game
 
     Author: Lorenzo Capra
     """
+    if i is not None:
+        print(f'... searching for game {i+1} ...')
 
     # Keep only the useful columns from the PBP dataframe
     pbp_restrict = pbp.loc[:, ['HOMEDESCRIPTION', 'VISITORDESCRIPTION', 'PLAYER1_ID',
-                               'PLAYER1_NAME', 'PLAYER2_ID', 'PLAYER2_NAME']]
+                               'PLAYER1_NAME', 'PLAYER2_ID', 'PLAYER2_NAME', 'PLAYER2_TEAM_ABBREVIATION']]
 
     # Build a PBP dataframe which considers only plays with an assist
     pbp_ast = pd.DataFrame()
@@ -160,23 +165,25 @@ def players_eav_in_1_game(pbp):
                 eav[i] = 3 * 0.2
 
     # Insert the EAV values in the pbp_ast dataframe
-    pbp_ast.insert(6, 'EAV', eav, True)
+    pbp_ast.insert(7, 'EAV', eav, True)
 
     # Assign the values to each player corresponding to the type of assist
-    players_eav = np.array(['Player', 'EAV'])
-    df_plays_eav = pbp_ast.loc[:, ['PLAYER2_NAME', 'EAV']]
+    players_eav = np.array(['Player', 'Team', 'EAV'])
+    df_plays_eav = pbp_ast.loc[:, ['PLAYER2_NAME', 'PLAYER2_TEAM_ABBREVIATION', 'EAV']]
 
     for player in pd.unique(pbp_ast.loc[:, 'PLAYER2_NAME']):
         count = 0
+        team = None
         for i in range(df_plays_eav.shape[0]):
             if df_plays_eav.iloc[i, 0] == player:
-                count += df_plays_eav.iloc[i, 1]
+                count += df_plays_eav.iloc[i, 2]
+                team = df_plays_eav.iloc[i, 1]
 
-        players_eav = np.concatenate((players_eav, np.array([player, count])))
+        players_eav = np.concatenate((players_eav, np.array([player, team, count])))
 
-    players_eav = players_eav.reshape(len(pd.unique(pbp_ast.loc[:, 'PLAYER2_NAME'])) + 1, 2)
+    players_eav = players_eav.reshape(len(pd.unique(pbp_ast.loc[:, 'PLAYER2_NAME'])) + 1, 3)
 
     # Transform into dataframe & return it
-    df_players_eav = pd.DataFrame(players_eav[1:, :], columns=['Player', 'EAV'])
+    df_players_eav = pd.DataFrame(players_eav[1:, :], columns=['Player', 'Team', 'EAV'])
 
     return df_players_eav
