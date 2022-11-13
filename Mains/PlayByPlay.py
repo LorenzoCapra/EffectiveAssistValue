@@ -32,16 +32,16 @@ df_players_eav = pd.DataFrame()
 for i in range(len(lal_games_id)):
   game_id = lal_games_id[i]
 
-  time.sleep(1)
+  time.sleep(0.5)
 
   pbp_ = playbyplayv2.PlayByPlayV2(game_id)
   pbp_ = pbp_.get_data_frames()[0]
 
-  time.sleep(1)
+  time.sleep(0.5)
 
   eav_game = players_eav_in_1_game(pbp_, i)
 
   df_players_eav = pd.concat([df_players_eav, eav_game], ignore_index=True)
 
 # Saving the dataframe
-df_players_eav.to_csv('LAL_EAV.csv', header=False, index=False)
+df_players_eav.to_csv('LAL_SEASON_EAV.csv', header=True, index=False)
