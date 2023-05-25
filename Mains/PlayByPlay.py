@@ -5,7 +5,7 @@ from nba_api.stats.endpoints import playbyplayv2
 from Tools.Utils import players_eav_in_1_game, games_in_1_season
 
 
-games, game_ids = games_in_1_season(season='2021-22', season_type='Regular Season')
+games, game_ids = games_in_1_season(season='2022-23', season_type='Regular Season')
 
 # Get ID of the 100th game
 game_id = game_ids[100]
@@ -47,7 +47,7 @@ for abb in team_ids:
       pbp_ = playbyplayv2.PlayByPlayV2(game_id)
       pbp_ = pbp_.get_data_frames()[0]
 
-      time.sleep(0.2)
+      time.sleep(0.5)
 
       eav_game = players_eav_in_1_game(pbp_, j)
 
@@ -62,4 +62,4 @@ for abb in team_ids:
     LAL = LAL.transpose()
 
     # Saving the dataframe
-    LAL.to_csv(f'CSV/SEASON/{TEAM_NAME}_SEASON_EAV.csv', header=True, index=False)
+    LAL.to_csv(f'CSV/SEASON_22_23/{TEAM_NAME}_SEASON_EAV.csv', header=True, index=False)
