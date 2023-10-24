@@ -1,10 +1,24 @@
+"""
+This is the main file, from which the pipeline starts. The script runs nested for loops over
+all the NBA teams first and then over all the games played by each team.
+Then another loop on each play of each single game is run, to retrieve all the assists.
+The EAV formula is then applied to transform each assist to its corresponding EAV value, and
+it is associated to the specific player that make the assist.
+At the end of the script the .csv files containing all the EAVs computed for each assist
+made by the players of each team are stored in the CSV folder.
+"""
+
+# Import general dependencies
 import pandas as pd
 import time
 
+# Import API endpoints used
 from nba_api.stats.endpoints import playbyplayv2
+
+# Import functionalities from other files
 from Tools.Utils import players_eav_in_1_game, games_in_1_season
 
-
+# Get the all the games played in 1 NBA season with their respective ids
 games, game_ids = games_in_1_season(season='2022-23', season_type='Regular Season')
 
 # Get ID of the 100th game

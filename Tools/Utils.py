@@ -1,8 +1,14 @@
+"""
+This file contains some utilities functions.
+"""
+
+# Import general dependencies
 import matplotlib as mpl
 import pandas as pd
 import numpy as np
 import re
 
+# Import API endpoints used
 from nba_api.stats.endpoints import leaguegamefinder
 from nba_api.stats.endpoints import leaguedashteamshotlocations
 
@@ -47,9 +53,9 @@ def games_in_1_season(season, season_type='Regular Season'):
     Function to get all the games with their respective ids for 1 specific season.
     :param season: string
     :param season_type: string
-    :return: games, game_ids
+    :return: games -> dataframe, game_ids -> list
     """
-    # Get game logs from the 2020-2021 regular season
+    # Get game logs from the specified regular season
     gamefinder = leaguegamefinder.LeagueGameFinder(season_nullable=season,
                                                    league_id_nullable='00',
                                                    season_type_nullable=season_type)
