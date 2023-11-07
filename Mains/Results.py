@@ -10,12 +10,17 @@ team_ids = ['ATL', 'BKN', 'BOS', 'CHA', 'CHI', 'CLE', 'DAL', 'DEN', 'DET', 'GSW'
             'HOU', 'IND', 'LAC', 'LAL', 'MEM', 'MIA', 'MIL', 'MIN', 'NOP', 'NYK',
             'OKC', 'ORL', 'PHI', 'PHX', 'POR', 'SAC', 'SAS', 'TOR', 'UTA', 'WAS']
 
+playoff_team_ids = ['ATL', 'BKN', 'BOS', 'CLE', 'DEN', 'GSW', 'LAC', 'LAL',
+                    'MEM', 'MIA', 'MIL', 'MIN', 'NYK', 'PHI', 'PHX', 'SAC']
+
+season = '2022-23'
+
 # Create a dataframe containing all the players with their average EAV
 all_players_eav = pd.DataFrame()
 
-for abb in team_ids:
+for abb in playoff_team_ids:
     TEAM_NAME = abb
-    TEAM = pd.read_csv(f'CSV/PLAYERS_EAV_22_23/{TEAM_NAME}_PLAYERS_AVG_EAV.csv')
+    TEAM = pd.read_csv(f'CSV/PLAYERS_{season}_playoffs/{TEAM_NAME}_PLAYERS_AVG_EAV_playoffs.csv')
 
     all_players_eav = pd.concat([all_players_eav, TEAM], axis=0, ignore_index=True)
 

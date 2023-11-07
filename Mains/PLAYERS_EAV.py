@@ -19,6 +19,9 @@ team_ids = ['ATL', 'BKN', 'BOS', 'CHA', 'CHI', 'CLE', 'DAL', 'DEN', 'DET', 'GSW'
             'HOU', 'IND', 'LAC', 'LAL', 'MEM', 'MIA', 'MIL', 'MIN', 'NOP', 'NYK',
             'OKC', 'ORL', 'PHI', 'PHX', 'POR', 'SAC', 'SAS', 'TOR', 'UTA', 'WAS']
 
+playoff_team_ids = ['ATL', 'BKN', 'BOS', 'CLE', 'DEN', 'GSW', 'LAC', 'LAL',
+                    'MEM', 'MIA', 'MIL', 'MIN', 'NYK', 'PHI', 'PHX', 'SAC']
+
 # Specify the season and the games played threshold
 season = '2022-23'
 gp_threshold = 41  # threshold on games played by a player
@@ -32,7 +35,7 @@ for abb in team_ids:
     TEAM_NAME = abb
     # Get the dataframe with the EAV associated to all the assists made
     # by the players of team abb during the season
-    TEAM = pd.read_csv(f'CSV/SEASON_22_23/{TEAM_NAME}_SEASON_EAV.csv')
+    TEAM = pd.read_csv(f'CSV/SEASON_{season}/{TEAM_NAME}_{season}_EAV.csv')
 
     # Check how many games each player has played during the season
     df_league_all = leaguedashplayerstats.LeagueDashPlayerStats(season=season, season_type_all_star='Regular Season')
