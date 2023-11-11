@@ -11,34 +11,27 @@ made by the players of each team are stored in the CSV folder.
 # Import general dependencies
 import pandas as pd
 import time
+import os
 
 # Import API endpoints used
 from nba_api.stats.endpoints import playbyplayv2
 
 # Import functionalities from other files
-from Tools.Utils import players_eav_in_1_game, games_in_1_season
+from tools.Utils import players_eav_in_1_game, games_in_1_season
 
 # Get the all the games played in 1 NBA season with their respective ids
-games, game_ids = games_in_1_season(season='2022-23', season_type='Regular Season')
+season = '2022-23'
+games, game_ids = games_in_1_season(season=season, season_type='Regular Season')
 
-# Get ID of the 100th game
-game_id = game_ids[100]
-
-# Get play-by-play data for the 100th game
-pbp = playbyplayv2.PlayByPlayV2(game_id)
-pbp = pbp.get_data_frames()[0]
-
-'''Compute EAV for each player of this game'''
-# df_eav = players_eav_in_1_game(pbp)
-
-
-'''Search for all LAL games'''
+# Shrink the games dataframe to contain only necessary information: team and game id
 games_restrict = games.loc[:, ['TEAM_ABBREVIATION', 'GAME_ID']]
 
+# Define all the possible team ids to iterate on
 team_ids = ['ATL', 'BKN', 'BOS', 'CHA', 'CHI', 'CLE', 'DAL', 'DEN', 'DET', 'GSW',
             'HOU', 'IND', 'LAC', 'LAL', 'MEM', 'MIA', 'MIL', 'MIN', 'NOP', 'NYK',
             'OKC', 'ORL', 'PHI', 'PHX', 'POR', 'SAC', 'SAS', 'TOR', 'UTA', 'WAS']
 
+# Perform the loop checking on all teams name abbreviations
 for abb in team_ids:
     print(f'--------------------------------------------------------')
     print(f'Iterating over {abb}...')
@@ -47,33 +40,45 @@ for abb in team_ids:
     TEAM_NAME = abb
     _games_id = []
 
+    # Loop over all the games to separate the games played by abb
     for i in range(games_restrict.shape[0]):
-      team = TEAM_NAME
-      if games_restrict.iloc[i, 0] == team:
+      # team = TEAM_NAME
+      if games_restrict.iloc[i, 0] == TEAM_NAME:
         _games_id.append(games_restrict.iloc[i, 1])
 
-    df_players_eav = pd.DataFrame()
+    df_abb_players_eav = pd.DataFrame()
+    # Loop over the games played by abb to get all the plays ending with
+    # an assist and computing the corresponding EAV value
     for j in range(len(_games_id)):
       game_id = _games_id[j]
 
+      # Usefull when quering the API
       time.sleep(0.2)
 
+      # Get the playbyplay dataframe from the specified game id
       pbp_ = playbyplayv2.PlayByPlayV2(game_id)
       pbp_ = pbp_.get_data_frames()[0]
 
+      # Usefull when quering the API
       time.sleep(0.5)
 
+      # Compute the EAV for each assist in the specified game
       eav_game = players_eav_in_1_game(pbp_, j)
 
-      df_players_eav = pd.concat([df_players_eav, eav_game], ignore_index=True)
+      # Build the dataframe with all the EAVs for all the assists for every game
+      # (this contains both the players of team abb and the players against abb in the specified game)
+      df_abb_players_eav = pd.concat([df_abb_players_eav, eav_game], ignore_index=True)
 
-    LAL = pd.DataFrame()
+    # Build a new dataframe that selects only the players from team abb
+    ABB = pd.DataFrame()
 
-    for k in range(df_players_eav.shape[0]):
-      if df_players_eav.iloc[k, 1] == TEAM_NAME:
-        LAL = pd.concat([LAL, df_players_eav.iloc[k, :]], axis=1, ignore_index=True)
+    for k in range(df_abb_players_eav.shape[0]):
+      if df_abb_players_eav.iloc[k, 1] == TEAM_NAME:
+        ABB = pd.concat([ABB, df_abb_players_eav.iloc[k, :]], axis=1, ignore_index=True)
 
-    LAL = LAL.transpose()
+    ABB = ABB.transpose()
 
-    # Saving the dataframe
-    LAL.to_csv(f'CSV/SEASON_22_23/{TEAM_NAME}_SEASON_EAV.csv', header=True, index=False)
+    # Saving the dataframe in the CSV folder
+    if not os.path.exists(f'CSV/SEASON_{season}'):
+        os.mkdir(f'CSV/SEASON_{season}')
+    ABB.to_csv(f'CSV/SEASON_{season}/{TEAM_NAME}_{season}_EAV.csv', header=True, index=False)

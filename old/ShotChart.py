@@ -1,9 +1,9 @@
 # Import packages
 from nba_api.stats.endpoints import shotchartdetail
 
-from Tools.Teams import Team
-from Tools.Players import Player
-from Tools.Utils import create_court
+from tools.Teams import Team
+from tools.Players import Player
+from tools.Utils import create_court
 
 import json
 import pandas as pd
