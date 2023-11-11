@@ -3,7 +3,7 @@ from nba_api.stats.endpoints import shotchartdetail
 
 from tools.Teams import Team
 from tools.Players import Player
-from tools.Utils import create_court
+from tools.utils import create_court
 
 import json
 import pandas as pd
