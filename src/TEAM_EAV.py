@@ -79,6 +79,6 @@ for abb in team_ids:
     ABB = ABB.transpose()
 
     # Saving the dataframe in the CSV folder
-    if not os.path.exists(f'CSV/SEASON_{season}'):
-        os.mkdir(f'CSV/SEASON_{season}')
-    ABB.to_csv(f'CSV/SEASON_{season}/{TEAM_NAME}_{season}_EAV.csv', header=True, index=False)
+    if not os.path.exists(f'../data/SEASON_{season}'):
+        os.mkdir(f'../data/SEASON_{season}')
+    ABB.to_csv(f'../data/SEASON_{season}/{TEAM_NAME}_{season}_EAV.csv', header=True, index=False)

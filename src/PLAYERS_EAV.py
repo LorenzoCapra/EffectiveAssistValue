@@ -81,6 +81,6 @@ for abb in team_ids:
     players_average_eav = pd.DataFrame(abb_dict)
 
     # Saving the dataframe in the CSV folder
-    if not os.path.exists(f'CSV/PLAYERS_{season}'):
-        os.mkdir(f'CSV/PLAYERS_{season}')
-    players_average_eav.to_csv(f'CSV/PLAYERS_{season}/{TEAM_NAME}_PLAYERS_AVG_EAV.csv', header=True, index=False)
+    if not os.path.exists(f'../data/PLAYERS_{season}'):
+        os.mkdir(f'../data/PLAYERS_{season}')
+    players_average_eav.to_csv(f'../data/PLAYERS_{season}/{TEAM_NAME}_PLAYERS_AVG_EAV.csv', header=True, index=False)

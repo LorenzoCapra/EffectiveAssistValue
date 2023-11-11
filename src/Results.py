@@ -20,7 +20,7 @@ all_players_eav = pd.DataFrame()
 
 for abb in playoff_team_ids:
     TEAM_NAME = abb
-    TEAM = pd.read_csv(f'CSV/PLAYERS_{season}_playoffs/{TEAM_NAME}_PLAYERS_AVG_EAV_playoffs.csv')
+    TEAM = pd.read_csv(f'../data/PLAYERS_{season}_playoffs/{TEAM_NAME}_PLAYERS_AVG_EAV_playoffs.csv')
 
     all_players_eav = pd.concat([all_players_eav, TEAM], axis=0, ignore_index=True)
 
