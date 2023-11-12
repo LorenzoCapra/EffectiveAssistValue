@@ -20,9 +20,9 @@ print("player_stats_df.shape", player_stats_df.shape)
 
 merged_df = player_stats_df.merge(all_eavs_df, left_on='PLAYER_NAME', right_on='Player', how='left')
 
-df_subcolumns = merged_df[['PLAYER_ID','Player', 'AVG EAV', 'MIN']]
-number_of_matches = 82
-df_subcolumns['average_minutes_played_by_each_player'] = df_subcolumns['MIN'] / number_of_matches
+df_subcolumns = merged_df[['PLAYER_ID','Player', 'AVG EAV', 'MIN', 'GP']]
+# number_of_matches = 82
+df_subcolumns['average_minutes_played_by_each_player'] = df_subcolumns['MIN'] / df_subcolumns['GP']
 df_subcolumns['minutes_factor'] = 36 / df_subcolumns['average_minutes_played_by_each_player'] 
 df_subcolumns['eav_corrected'] = df_subcolumns['AVG EAV'] * df_subcolumns['minutes_factor'] 
 
