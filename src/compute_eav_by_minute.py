@@ -21,9 +21,14 @@ print("player_stats_df.shape", player_stats_df.shape)
 merged_df = player_stats_df.merge(all_eavs_df, left_on='PLAYER_NAME', right_on='Player', how='left')
 
 df_subcolumns = merged_df[['PLAYER_ID','Player', 'AVG EAV', 'MIN', 'GP']]
+df_subcolumns = df_subcolumns.loc[(df_subcolumns['GP'] >= 41)]
 # number_of_matches = 82
 df_subcolumns['average_minutes_played_by_each_player'] = df_subcolumns['MIN'] / df_subcolumns['GP']
 df_subcolumns['minutes_factor'] = 36 / df_subcolumns['average_minutes_played_by_each_player'] 
 df_subcolumns['eav_corrected'] = df_subcolumns['AVG EAV'] * df_subcolumns['minutes_factor'] 
 
 df_subcolumns.to_csv(player_stats_folder / "player_average_eav_by_36_minutes.csv")
+
+df_ranking = df_subcolumns.sort_values(by=['eav_corrected'], axis=0, ascending=False).reset_index(drop=True)
+
+print(df_ranking.head(10))
