@@ -17,10 +17,11 @@ import os
 from nba_api.stats.endpoints import playbyplayv2
 
 # Import functionalities from other files
-from tools.utils import players_eav_in_1_game, games_in_1_season
+from tools.Utils import players_eav_in_1_game, games_in_1_season
 
 # Get the all the games played in 1 NBA season with their respective ids
 season = '2022-23'
+restrict_to_crunch_time=False
 games, game_ids = games_in_1_season(season=season, season_type='Regular Season')
 
 # Shrink the games dataframe to contain only necessary information: team and game id
@@ -63,7 +64,7 @@ for abb in team_ids:
       time.sleep(0.5)
 
       # Compute the EAV for each assist in the specified game
-      eav_game = players_eav_in_1_game(pbp_, j)
+      eav_game = players_eav_in_1_game(pbp_, j, restrict_to_crunch_time)
 
       # Build the dataframe with all the EAVs for all the assists for every game
       # (this contains both the players of team abb and the players against abb in the specified game)
