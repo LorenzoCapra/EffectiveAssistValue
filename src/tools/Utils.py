@@ -67,7 +67,7 @@ def games_in_1_season(season, season_type='Regular Season'):
     return games, game_ids
 
 
-def players_eav_in_1_game(pbp, i=None):
+def players_eav_in_1_game(pbp, i=None, restrict_to_crunch_time:bool=False):
     """
     Function to extract the EAV values of each player for a specific game
 
@@ -85,6 +85,11 @@ def players_eav_in_1_game(pbp, i=None):
 
     # Keep only the useful columns from the PBP dataframe
     pbp_restrict = pbp.loc[:, ['HOMEDESCRIPTION', 'VISITORDESCRIPTION', 'PLAYER1_ID',
+                               'PLAYER1_NAME', 'PLAYER2_ID', 'PLAYER2_NAME', 'PLAYER2_TEAM_ABBREVIATION', 'PCTIMESTRING', 'PERIOD']]
+    
+    if restrict_to_crunch_time:
+        pbp_restrict = pbp_restrict[(pbp_restrict['PCTIMESTRING'].apply(lambda x: int("".join(x.split(':')))<=500)) & (pbp_restrict['PERIOD']==4)]
+        pbp_restrict = pbp_restrict.loc[:, ['HOMEDESCRIPTION', 'VISITORDESCRIPTION', 'PLAYER1_ID',
                                'PLAYER1_NAME', 'PLAYER2_ID', 'PLAYER2_NAME', 'PLAYER2_TEAM_ABBREVIATION']]
 
     # Build a PBP dataframe which considers only plays with an assist
