@@ -176,25 +176,29 @@ def players_eav_in_1_game(pbp, i=None, restrict_to_crunch_time:bool=False):
                 eav[i] = 3 * 0.2
 
     # Insert the EAV values in the pbp_ast dataframe
-    pbp_ast.insert(7, 'EAV', eav, True)
+    if pbp_ast.shape[0] != 0:
+        pbp_ast.insert(7, 'EAV', eav, True)
 
-    # Assign the values to each player corresponding to the type of assist
-    players_eav = np.array(['Player', 'Team', 'EAV'])
-    df_plays_eav = pbp_ast.loc[:, ['PLAYER2_NAME', 'PLAYER2_TEAM_ABBREVIATION', 'EAV']]
+        # Assign the values to each player corresponding to the type of assist
+        players_eav = np.array(['Player', 'Team', 'EAV'])
+        df_plays_eav = pbp_ast.loc[:, ['PLAYER2_NAME', 'PLAYER2_TEAM_ABBREVIATION', 'EAV']]
 
-    for player in pd.unique(pbp_ast.loc[:, 'PLAYER2_NAME']):
-        count = 0
-        team = None
-        for i in range(df_plays_eav.shape[0]):
-            if df_plays_eav.iloc[i, 0] == player:
-                count += df_plays_eav.iloc[i, 2]
-                team = df_plays_eav.iloc[i, 1]
+        for player in pd.unique(pbp_ast.loc[:, 'PLAYER2_NAME']):
+            count = 0
+            team = None
+            for i in range(df_plays_eav.shape[0]):
+                if df_plays_eav.iloc[i, 0] == player:
+                    count += df_plays_eav.iloc[i, 2]
+                    team = df_plays_eav.iloc[i, 1]
 
-        players_eav = np.concatenate((players_eav, np.array([player, team, count])))
+            players_eav = np.concatenate((players_eav, np.array([player, team, count])))
 
-    players_eav = players_eav.reshape(len(pd.unique(pbp_ast.loc[:, 'PLAYER2_NAME'])) + 1, 3)
+        players_eav = players_eav.reshape(len(pd.unique(pbp_ast.loc[:, 'PLAYER2_NAME'])) + 1, 3)
 
-    # Transform into dataframe & return it
-    df_players_eav = pd.DataFrame(players_eav[1:, :], columns=['Player', 'Team', 'EAV'])
+        # Transform into dataframe & return it
+        df_players_eav = pd.DataFrame(players_eav[1:, :], columns=['Player', 'Team', 'EAV'])
+
+    else:
+        df_players_eav = pd.DataFrame()
 
     return df_players_eav
