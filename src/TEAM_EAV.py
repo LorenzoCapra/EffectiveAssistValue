@@ -17,7 +17,7 @@ import os
 from nba_api.stats.endpoints import playbyplayv2
 
 # Import functionalities from other files
-from tools.Utils import players_eav_in_1_game, games_in_1_season
+from tools.utils import players_eav_in_1_game, games_in_1_season
 
 # Get the all the games played in 1 NBA season with their respective ids
 season = '2022-23'
